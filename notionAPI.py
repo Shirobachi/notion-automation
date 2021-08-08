@@ -1,13 +1,16 @@
 # imports
 import requests, json, os
 from dotenv import load_dotenv
+import logging
 
 # load variables from .env
 load_dotenv()
 
-# will return data read from the notion API, default is to return only properties to get all add showAll = True
-# provide database id and toke (can be in .env)
-# optional: give sort array [ 'fieldname', 'asc' ] | type of sorting can be empty
+# ini logging
+loggingFormat = "%(levelname)s: [%(asctime)s]#%(filename)s:%(lineno)s %(message)s"
+logging.basicConfig(filename="notionAPI.log", level=0, format=loggingFormat)
+logger = logging.getLogger()
+logger.info("Logger started")
 def readData(token=os.getenv("notionAPI"), databaseID=os.getenv("database"), sort = None, showAll = False):
 	url = f"https://api.notion.com/v1/databases/{databaseID}/query"
 	head = getHead(token)
