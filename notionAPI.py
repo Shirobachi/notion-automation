@@ -100,7 +100,7 @@ def create(data, databaseID=os.getenv("database"), token=os.getenv("notionAPI"))
 
 	finalData = prepareProperties(finalData, data)
 
-	printJSON(finalData) #TODO: remove
+	# printJSON(finalData) #TODO: remove
 
 	r = requests.post(url, headers=header, json=finalData)
 
@@ -206,6 +206,11 @@ def prepareProperties(finalData, data):
 				print('Wrong number of arguments should be 2 (name of field, value) or 3 (same + color)')
 				logging.error("Wrong number of arguments")
 				exit(1)
+				
+		elif fieldType in ['url']:
+			finalData['properties'][i[0]] = {
+				fieldType: i[1]
+			}
 	
 		else: 
 			print(f"We not support {fieldType} yet!") 
