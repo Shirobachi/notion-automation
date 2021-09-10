@@ -6,9 +6,12 @@ import logging
 # load variables from .env
 load_dotenv()
 
-# ini logging
+# init logging
+# get script directory
+scriptDir = os.path.dirname(os.path.realpath(__file__))
+print(scriptDir)
 loggingFormat = "%(levelname)s: [%(asctime)s]#%(filename)s:%(lineno)s %(message)s"
-logging.basicConfig(filename="notionAPI.log", level=0, format=loggingFormat)
+logging.basicConfig(filename=scriptDir + "/notionAPI.log", level=0, format=loggingFormat)
 logger = logging.getLogger()
 logger.info("Logger started")
 
@@ -81,7 +84,7 @@ def readSchema(token=os.getenv("notionAPI"), databaseID=os.getenv("database"), s
 		logger.error('Notion API return error')
 		exit(1)
 
-def create(data, databaseID=os.getenv("database"), token=os.getenv("notionAPI")):
+def create(data, databaseID=os.getenv("database"), token=os.getenv("notionAPI"), debug = False):
 	"""
 		will create a new entry in the notion database
 		provide array of arrays as data variable where
@@ -100,7 +103,16 @@ def create(data, databaseID=os.getenv("database"), token=os.getenv("notionAPI"))
 
 	finalData = prepareProperties(finalData, data)
 
-	# printJSON(finalData) #TODO: remove
+	if debug:
+		print("--- DEBUG ---")
+
+		print('URL: ', url)
+		print("Header: ")
+		printJSON(header)
+		print("Data:")
+		printJSON(finalData)
+
+		print("--- DEBUG ---")
 
 	r = requests.post(url, headers=header, json=finalData)
 
@@ -108,8 +120,7 @@ def create(data, databaseID=os.getenv("database"), token=os.getenv("notionAPI"))
 		return r.json()
 	else:
 		printJSON(r.json())
-
-	exit(1)
+		exit(1)
 
 # # # - - - # # # - - - # # # - - - # # # - - - # # # - - - # # # - - - # # # 
 
